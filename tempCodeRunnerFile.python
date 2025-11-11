@@ -1,0 +1,48 @@
+from collections import defaultdict
+
+def parent(node, k):
+    if node == 1:
+        return None
+    return (node - 2) // k + 1
+
+def get_path(u, v, k):
+    path = []
+    while u != v:
+        if u > v:
+            p = parent(u, k)
+            path.append((min(u, p), max(u, p)))
+            u = p
+        else:
+            p = parent(v, k)
+            path.append((min(v, p), max(v, p)))
+            v = p
+    return path
+
+def main():
+    k, q = map(int, input().split())
+    edge_weights = defaultdict(int)
+    results = []
+
+    for _ in range(q):
+        parts = input().split()
+        query_type = int(parts[0])
+        
+        if query_type == 1:
+            u = int(parts[1])
+            v = int(parts[2])
+            path = get_path(u, v, k)
+            total_weight = sum(edge_weights.get(edge, 1) for edge in path)
+            results.append(str(total_weight))
+        
+        elif query_type == 2:
+            u = int(parts[1])
+            v = int(parts[2])
+            w = int(parts[3])
+            path = get_path(u, v, k)
+            for edge in path:
+                edge_weights[edge] += w
+
+    print("\n".join(results))
+
+# Run main function
+main()
